@@ -44,6 +44,7 @@ class TwitterCards implements TwitterCardsContract
      */
     public function generate($minify = false)
     {
+        $this->html[] = "\t<!-- Twitter Cards -->";
         $this->eachValue($this->values);
         $this->eachValue($this->images, 'images');
 
@@ -84,7 +85,7 @@ class TwitterCards implements TwitterCardsContract
     private function makeTag($key, $value)
     {
         $value = str_replace(['http-equiv=', 'url='], '', $value);
-        return '<meta name="'.$this->prefix.strip_tags($key).'" content="'.strip_tags($value).'" />';
+        return "\t". '<meta name="'.$this->prefix.strip_tags($key).'" content="'.strip_tags($value).'">';
     }
 
     /**

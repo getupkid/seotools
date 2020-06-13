@@ -171,7 +171,9 @@ class OpenGraph implements OpenGraphContract
     {
         $this->setupDefaults();
 
-        $output = $this->eachProperties($this->properties);
+        $output = "\t<!-- Facebook Open Graph -->\n";
+
+        $output .= $this->eachProperties($this->properties);
 
         $props = [
             'images'                      => ['image',   true],
@@ -218,7 +220,6 @@ class OpenGraph implements OpenGraphContract
         $ogPrefix = true
     ) {
         $html = [];
-
         foreach ($properties as $property => $value) {
             // multiple properties
             if (is_array($value)) {
@@ -260,7 +261,7 @@ class OpenGraph implements OpenGraphContract
     {
         $value = str_replace(['http-equiv=', 'url='], '', $value);
         return sprintf(
-            '<meta property="%s%s" content="%s" />%s',
+            "\t<meta property=\"%s%s\" content=\"%s\">%s",
             $ogPrefix ? $this->og_prefix : '',
             strip_tags($key),
             strip_tags($value),

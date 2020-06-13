@@ -151,12 +151,22 @@ class SEOMeta implements MetaTagsContract
 
         $html = [];
 
+        // I like the viewport meta tag to be at the top
+        if(array_key_exists('viewport', $metatags)) {
+            $html[] = "<meta name=\"viewport\" content=\"{$metatags['viewport'][1]}\">";
+            unset($metatags['viewport']);
+        }
+
         if ($title) {
-            $html[] = Arr::get($this->config, 'add_notranslate_class', false) ? "<title class=\"notranslate\">$title</title>" : "<title>$title</title>";
+            $html[] = Arr::get($this->config, 'add_notranslate_class', false) ? "\n\t<title class=\"notranslate\">$title</title>\n" : "\n\t<title>$title</title>\n";
+        }
+
+        if ($canonical) {
+            $html[] = "\t<link rel=\"canonical\" href=\"{$canonical}\">\n";
         }
 
         if ($description) {
-            $html[] = "<meta name=\"description\" content=\"{$description}\">";
+            $html[] = "\t<meta name=\"description\" content=\"{$description}\">";
         }
 
         if (!empty($keywords)) {
@@ -166,7 +176,7 @@ class SEOMeta implements MetaTagsContract
             }
             
             $keywords = implode(', ', $keywords);
-            $html[] = "<meta name=\"keywords\" content=\"{$keywords}\">";
+            $html[] = "\t<meta name=\"keywords\" content=\"{$keywords}\">";
         }
 
         foreach ($metatags as $key => $value) {
@@ -178,31 +188,27 @@ class SEOMeta implements MetaTagsContract
                 continue;
             }
 
-            $html[] = "<meta {$name}=\"{$key}\" content=\"{$content}\">";
-        }
-
-        if ($canonical) {
-            $html[] = "<link rel=\"canonical\" href=\"{$canonical}\"/>";
+            $html[] = "\t<meta {$name}=\"{$key}\" content=\"{$content}\">";
         }
 
         if ($amphtml) {
-            $html[] = "<link rel=\"amphtml\" href=\"{$amphtml}\"/>";
+            $html[] = "\t<link rel=\"amphtml\" href=\"{$amphtml}\">";
         }
 
         if ($prev) {
-            $html[] = "<link rel=\"prev\" href=\"{$prev}\"/>";
+            $html[] = "\t<link rel=\"prev\" href=\"{$prev}\">";
         }
 
         if ($next) {
-            $html[] = "<link rel=\"next\" href=\"{$next}\"/>";
+            $html[] = "\t<link rel=\"next\" href=\"{$next}\">";
         }
 
         foreach ($languages as $lang) {
-            $html[] = "<link rel=\"alternate\" hreflang=\"{$lang['lang']}\" href=\"{$lang['url']}\"/>";
+            $html[] = "\t<link rel=\"alternate\" hreflang=\"{$lang['lang']}\" href=\"{$lang['url']}\">";
         }
 
         if ($robots) {
-            $html[] = "<meta name=\"robots\" content=\"{$robots}\">";
+            $html[] = "\t<meta name=\"robots\" content=\"{$robots}\">\n";
         }
 
         return ($minify) ? implode('', $html) : implode(PHP_EOL, $html);
